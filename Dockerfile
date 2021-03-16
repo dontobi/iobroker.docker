@@ -1,4 +1,4 @@
-FROM balenalib/armv7hf-node:12-bullseye
+FROM balenalib/armv7hf-node:12-buster
 
 MAINTAINER dontobi <github@myhome.zone>
 
@@ -9,7 +9,7 @@ RUN ["cross-build-start"]
 RUN apt-get update && apt-get install -y --no-install-recommends \
     acl apt-utils build-essential git gnupg2 gosu lsb-release jq \
     libavahi-compat-libdnssd-dev libcap2-bin libcurl4-openssl-dev \
-    libgdcm-dev libpam0g-dev libudev-dev locales net-tools \
+    libgdcm2-dev libpam0g-dev libudev-dev locales net-tools \
     pkg-config python3 python3-dev unzip wget
 
 # Generating locales
