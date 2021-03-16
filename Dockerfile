@@ -11,7 +11,7 @@ RUN install_packages acl apt-utils build-essential curl git gnupg2 \
     libcap2-bin libcurl4-openssl-dev libgdcm2-dev libgif-dev libjpeg-dev \
     libpam0g-dev libpango1.0-dev libpixman-1-dev librsvg2-dev libudev-dev \
     locales make net-tools pkg-config procps python python-dev sudo udev \
-    unzip wget \
+    unzip wget
 
 # Generating locales
 RUN sed -i 's/^# *\(de_DE.UTF-8\)/\1/' /etc/locale.gen \
