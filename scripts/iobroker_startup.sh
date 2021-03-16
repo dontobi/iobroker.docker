@@ -413,6 +413,9 @@ then
   fi
 fi
 
+# Cleaning ioBroker directory
+sudo -H -u iobroker npm cache clean --force
+
 # Removing first run marker when exists
 if [ -f /opt/.firstrun ]
 then

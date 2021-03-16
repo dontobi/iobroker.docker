@@ -1,5 +1,7 @@
 [![Source](https://img.shields.io/badge/source-github-blue)](https://github.com/dontobi/ioBroker.docker)
 [![Github Issues](https://img.shields.io/github/issues/dontobi/ioBroker.docker)](https://github.com/dontobi/ioBroker.docker/issues)
+[![Docker Image Size (tag)](https://img.shields.io/docker/image-size/dontobi/iobroker.docker/latest)](https://hub.docker.com/repository/docker/dontobi/iobroker.docker)
+[![Docker Pulls](https://img.shields.io/docker/pulls/dontobi/iobroker.docker)](https://hub.docker.com/repository/docker/dontobi/iobroker.docker)
 [![License](https://img.shields.io/github/license/dontobi/iobroker.docker)](https://github.com/dontobi/iobroker.docker/blob/main/LICENSE.md)
 
 # ioBroker for Docker

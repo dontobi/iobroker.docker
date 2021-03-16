@@ -6,11 +6,12 @@ MAINTAINER dontobi <github@myhome.zone>
 RUN ["cross-build-start"]
 
 # Install prerequisites (as listed in iobroker installer.sh)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    acl apt-utils build-essential git gnupg2 gosu lsb-release jq \
-    libavahi-compat-libdnssd-dev libcap2-bin libcurl4-openssl-dev \
-    libgdcm2-dev libpam0g-dev libudev-dev locales net-tools \
-    pkg-config python3 python3-dev unzip wget
+RUN install_packages acl apt-utils build-essential curl git gnupg2 \
+    gosu lsb-release jq libavahi-compat-libdnssd-dev libcairo2-dev \
+    libcap2-bin libcurl4-openssl-dev libgdcm2-dev libgif-dev libjpeg-dev \
+    libpam0g-dev libpango1.0-dev libpixman-1-dev librsvg2-dev libudev-dev \
+    locales make net-tools pkg-config procps python python-dev sudo udev \
+    unzip wget \
 
 # Generating locales
 RUN sed -i 's/^# *\(de_DE.UTF-8\)/\1/' /etc/locale.gen \
@@ -32,7 +33,7 @@ RUN chmod 777 /opt/scripts/ \
 # Install ioBroker and Setting up iobroker-user
 WORKDIR /
 RUN apt-get update \
-	&& npm config set unsafe-perm true \
+    && npm config set unsafe-perm true \
     && curl -sL https://iobroker.net/install.sh | bash - \
     && mkdir -p /opt/scripts/.docker_config/ \
     && echo $(hostname) > /opt/scripts/.docker_config/.install_host \
@@ -43,7 +44,7 @@ RUN apt-get update \
     && usermod -u 1000 iobroker \
     && groupmod -g 1000 iobroker \
     && apt-get autoclean -y \
-    && apt-get autoremove \
+    && apt-get autoremove --purge \
     && apt-get clean \
     && rm -rf /tmp/* /var/tmp/* \
     && rm -rf /root/.cache/* /root/.npm/* \
