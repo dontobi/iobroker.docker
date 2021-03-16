@@ -1,6 +1,6 @@
 [![Source](https://img.shields.io/badge/source-github-blue)](https://github.com/dontobi/ioBroker.docker)
 [![Github Issues](https://img.shields.io/github/issues/dontobi/ioBroker.docker)](https://github.com/dontobi/ioBroker.docker/issues)
-[![License](https://img.shields.io/github/license/dontobi/ioBroker.docker)](https://github.com/dontobi/iobroker.docker/blob/master/LICENSE.md)
+[![License](https://img.shields.io/github/license/dontobi/iobroker.docker)](https://github.com/dontobi/iobroker.docker/blob/main/LICENSE.md)
 
 # ioBroker for Docker
 IoBroker for Docker is a ready to use Docker image for [ioBroker IoT platform](http://www.iobroker.net).
