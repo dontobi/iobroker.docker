@@ -57,6 +57,9 @@ ENV DEBIAN_FRONTEND="teletype" \
 # Setting up Ports
 EXPOSE 8081
 
+# Setting up Volume
+VOLUME [ "/opt/iobroker" ]
+
 # Healthcheck
 HEALTHCHECK --interval=15s --timeout=5s --retries=5 \
     CMD ["/bin/bash", "-c", "/opt/scripts/healthcheck.sh"]
