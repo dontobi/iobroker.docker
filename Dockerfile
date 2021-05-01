@@ -1,4 +1,4 @@
-FROM balenalib/armv7hf-node:12-buster
+FROM balenalib/armv7hf-node:14-buster
 MAINTAINER dontobi <github@myhome.zone>
 
 # QEMU for ARM to build ARM image on X86 machine
