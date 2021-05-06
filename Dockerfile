@@ -5,8 +5,6 @@ MAINTAINER dontobi <github@myhome.zone>
 RUN ["cross-build-start"]
 
 # Install prerequisites
-COPY scripts /opt/scripts
-COPY userscripts /opt/userscripts
 RUN install_packages acl apt-utils build-essential curl git gnupg2 gosu \
     lsb-release jq libavahi-compat-libdnssd-dev libcairo2-dev libcap2-bin \
     libcurl4-openssl-dev libgdcm2-dev libgif-dev libjpeg-dev libpam0g-dev \
@@ -19,6 +17,8 @@ RUN sed -i 's/^# *\(de_DE.UTF-8\)/\1/' /etc/locale.gen \
     && locale-gen
 
 # Create scripts directorys and copy scripts
+COPY scripts /opt/scripts
+COPY userscripts /opt/userscripts
 RUN chmod 777 /opt/scripts/ \
     && chmod 777 /opt/userscripts/ \
     && chmod +x /opt/scripts/iobroker_startup.sh \
