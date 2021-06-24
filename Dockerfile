@@ -4,16 +4,44 @@ MAINTAINER dontobi <github@myhome.zone>
 # QEMU for ARM to build ARM image on X86 machine
 RUN ["cross-build-start"]
 
-# Install prerequisites
-RUN install_packages acl apt-utils build-essential cifs-utils curl git gnupg2 gosu lsb-release \
-    jq libavahi-compat-libdnssd-dev libcairo2-dev libcap2-bin libcurl4-openssl-dev libgdcm2-dev \ 
-    libgif-dev libjpeg-dev libpam0g-dev libpango1.0-dev libpixman-1-dev librsvg2-dev libudev-dev \
-    locales make net-tools nfs-common pkg-config procps python python-dev sudo udev unzip wget
-
-# Generating locales
-RUN sed -i 's/^# *\(de_DE.UTF-8\)/\1/' /etc/locale.gen \
+# Install ioBroker
+RUN apt-get update && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends \
+        # ioBroker prerequisites
+        acl apt-utils build-essential ca-certificates curl git gnupg2 gosu jq libcap2-bin \
+        libpam0g-dev libudev-dev locales lsb-release make net-tools pkg-config procps \
+        python python-dev sudo unzip tar tzdata udev wget \
+        # Canvas prerequisites
+        libcairo2-dev libjpeg-dev libgif-dev libpango1.0-dev libpixman-1-dev  librsvg2-dev \
+        # Avahi-Daemon prerequisites
+        avahi-daemon avahi-utils libavahi-compat-libdnssd-dev libnss-mdns \
+        # Adapter prerequisites (BackitUp, Zigbee and Vodafone-Speedtest)
+        cifs-utils libcurl4-openssl-dev libgdcm2-dev nfs-common \
+    # Install node-gyp - Node.js native addon build tool
+    && npm install -g node-gyp \
+    # Generate locales en_US.UTF-8 and de_DE.UTF-8
+    && sed -i 's/^# *\(de_DE.UTF-8\)/\1/' /etc/locale.gen \
     && sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen \
-    && locale-gen
+    && locale-gen \
+    # Install ioBroker and Setting up iobroker-user
+    && npm config set unsafe-perm true \
+    && curl -sL https://iobroker.net/install.sh | sed -e 's/cap_net_admin,//' | bash - \
+    && mkdir -p /opt/scripts/.docker_config/ \
+    && echo $(hostname) > /opt/scripts/.docker_config/.install_host \
+    && echo "starting" > /opt/scripts/.docker_config/.healthcheck \
+    && echo $(hostname) > /opt/.firstrun \
+    && chsh -s /bin/bash iobroker \
+    && usermod --home /opt/iobroker iobroker \
+    && usermod -u 1000 iobroker \
+    && groupmod -g 1000 iobroker \
+    && npm config set unsafe-perm falsefalse \
+    # Clean up installation cache
+    && apt-get autoclean -y \
+    && apt-get autoremove \
+    && apt-get clean \
+    && rm -rf /tmp/* /var/tmp/* \
+    && rm -rf /root/.cache/* /root/.npm/* \
+    && rm -rf /var/lib/apt/lists/*
 
 # Create scripts directorys and copy scripts
 COPY scripts /opt/scripts
@@ -26,31 +54,6 @@ RUN chmod 777 /opt/scripts/ \
     && chmod +x /opt/scripts/setup_zwave.sh \
     && chmod +x /opt/scripts/healthcheck.sh \
     && chmod +x /opt/scripts/maintenance.sh
-
-# Install ioBroker and Setting up iobroker-user
-WORKDIR /
-RUN apt-get update \
-    && npm config set unsafe-perm true \
-    && curl -sL https://iobroker.net/install.sh | bash - \
-    && mkdir -p /opt/scripts/.docker_config/ \
-    && echo $(hostname) > /opt/scripts/.docker_config/.install_host \
-    && echo "starting" > /opt/scripts/.docker_config/.healthcheck \
-    && echo $(hostname) > /opt/.firstrun \
-    && chsh -s /bin/bash iobroker \
-    && usermod --home /opt/iobroker iobroker \
-    && usermod -u 1000 iobroker \
-    && groupmod -g 1000 iobroker \
-    && apt-get autoclean -y \
-    && apt-get autoremove \
-    && apt-get clean \
-    && rm -rf /tmp/* /var/tmp/* \
-    && rm -rf /root/.cache/* /root/.npm/* \
-    && rm -rf /var/lib/apt/lists/* \
-    && npm config set unsafe-perm falsefalse
-
-# Install node-gyp
-WORKDIR /opt/iobroker/
-RUN npm install -g node-gyp
 
 # Backup initial ioBroker and userscript folder
 RUN tar -cf /opt/initial_iobroker.tar /opt/iobroker \
