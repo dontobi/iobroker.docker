@@ -1,5 +1,3 @@
-sudo: required
-
 branches:
   only:
   - main
@@ -7,7 +5,7 @@ branches:
 services:
   - docker
 
-language: bash
+language: shell
 
 env:
   global:
