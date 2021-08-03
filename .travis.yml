@@ -84,7 +84,7 @@ after_success:
 # tag and push built images
   - >
     if [ "$TRAVIS_BRANCH" == "main" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$JOB_NAME" == "Build images" ] ; then
-      docker push dontobi/iobroker.docker:$VERSION-$ARCH
+      docker push dontobi/iobroker.docker:$ARCH-$NODEJS-$VERSION
     fi
 
 # update repository manifest for multiarch and push to hub
