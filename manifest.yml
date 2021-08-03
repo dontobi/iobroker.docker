@@ -1,7 +1,18 @@
 image: dontobi/iobroker.docker:$DOCKERTAG
 manifests:
   -
-    image: dontobi/iobroker.docker:$VERSION
+    image: dontobi/iobroker.docker:$VERSION-amd64
+    platform:
+      architecture: amd64
+      os: linux
+  -
+    image: dontobi/iobroker.docker:$VERSION-aarch64
+    platform:
+      architecture: arm64
+      variant: v8
+      os: linux
+  -
+    image: dontobi/iobroker.docker:$VERSION-armv7hf
     platform:
       architecture: arm
       variant: v7
