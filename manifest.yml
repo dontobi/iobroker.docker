@@ -1,0 +1,8 @@
+image: dontobi/iobroker.docker:$DOCKERTAG
+manifests:
+  -
+    image: dontobi/iobroker.docker:$VERSION
+    platform:
+      architecture: arm
+      variant: v7
+      os: linux

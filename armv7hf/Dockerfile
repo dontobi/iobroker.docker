@@ -1,8 +1,5 @@
-FROM balenalib/armv7hf-node:14-buster
+FROM balenalib/armv7hf-node:14-bullseye
 MAINTAINER dontobi <github@myhome.zone>
-
-# QEMU for ARM to build ARM image on X86 machine
-RUN ["cross-build-start"]
 
 # Install ioBroker
 RUN apt-get update && apt-get upgrade -y \
@@ -77,9 +74,6 @@ VOLUME [ "/opt/iobroker" ]
 # Healthcheck
 HEALTHCHECK --interval=15s --timeout=5s --retries=5 \
     CMD ["/bin/bash", "-c", "/opt/scripts/healthcheck.sh"]
-
-# QEMU for ARM to build ARM image on X86 machine
-RUN ["cross-build-end"]
 
 # Run startup-script
 ENTRYPOINT ["/bin/bash", "-c", "/opt/scripts/iobroker_startup.sh"]

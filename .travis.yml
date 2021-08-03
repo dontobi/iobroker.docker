@@ -1,0 +1,64 @@
+sudo: required
+
+branches:
+  only:
+  - main
+
+services:
+  - docker
+
+language: bash
+
+env:
+  global:
+  - VERSION="$(cat .VERSION)"
+
+before_install:
+  - wget https://github.com/estesp/manifest-tool/releases/download/v0.7.0/manifest-tool-linux-amd64 -O manifest-tool
+  - chmod +x manifest-tool
+  - docker run --rm --privileged multiarch/qemu-user-static:register
+  - echo "$HUB_PASS" | docker login -u "$HUB_USER" --password-stdin
+
+jobs:
+  include:
+    - stage: Build images
+      env:
+        - ARCH=armv7hf
+        - JOB_NAME="Build images"
+      script:
+        - docker run --rm --privileged multiarch/qemu-user-static:register --reset
+        - sed -i "s/\$VERSION/${VERSION}/g" $ARCH/scripts/iobroker_startup.sh
+        - docker build -t "dontobi/iobroker.docker:$VERSION-$ARCH" ./armv7hf
+
+    - stage: Manifest
+      env:
+        - JOB_NAME="Manifest"
+      script:
+        - echo Placeholder
+
+after_success:
+# tag and push built images
+  - >
+    if [ "$TRAVIS_BRANCH" == "main" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$JOB_NAME" == "Build images" ] ; then
+      docker push dontobi/iobroker.docker:$VERSION-$ARCH
+    fi
+
+# update repository manifest for multiarch and push to hub
+  - >
+    if [ "$TRAVIS_BRANCH" == "main" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$JOB_NAME" == "Manifest" ]; then
+      cat manifest.yml | sed "s/\$VERSION/${VERSION}/g" > manifest.yaml
+
+      #manifest for image: dontobi/iobroker.docker:version
+      cat manifest.yaml | sed "s/\$DOCKERTAG/${VERSION}/g" > manifestversion.yaml
+
+      #manifest for image: dontobi/iobroker.docker:latest
+      cat manifest.yaml | sed "s/\$DOCKERTAG/latest/g" > manifestlatest.yaml
+
+      #push to hub
+      mv manifestversion.yaml iobroker.yaml
+      ./manifest-tool --username $HUB_USER --password $HUB_PASS push from-spec iobroker.yaml
+
+      mv manifestlatest.yaml iobroker.yaml
+      ./manifest-tool --username $HUB_USER --password $HUB_PASS push from-spec iobroker.yaml
+
+    fi
