@@ -19,11 +19,12 @@ statesdbtype=$IOB_STATESDB_TYPE
 usbdevices=$USBDEVICES
 zwave=$ZWAVE
 
-# Getting os version for logging
-version=`cat /etc/*-release | grep "PRETTY_NAME" | sed 's/PRETTY_NAME=//g' | sed 's/"//g'`
-
-# Getting date and time for logging
+# Getting infos
 dati=`date '+%Y-%m-%d %H:%M:%S'`
+version=`cat /etc/*-release | grep "PRETTY_NAME" | sed 's/PRETTY_NAME=//g' | sed 's/"//g'`
+arch=`uname -m`
+node=`node -v`
+npm=`npm -v`
 
 # Logging header
 echo "-------------------------------------------------------"
@@ -33,9 +34,9 @@ echo "-------------------------------------------------------"
 echo "Debugging Information"
 echo "Date: $dati"
 echo "OS: $version"
-echo "Arch: $(uname -m)"
-echo "Node: $(node -v)"
-echo "NPM: $(npm -v)"
+echo "Arch: $arch"
+echo "Node: $node"
+echo "NPM: $npm"
 echo "-------------------------------------------------------"
 echo "Container Information"
 if [ "$adminport" != "" ]; then echo "IOB_ADMINPORT: "$adminport; fi
@@ -58,6 +59,7 @@ if [ "$zwave" != "" ]; then echo "ZWAVE: "$zwave; fi
 #####
 echo "-------------------------------------------------------"
 echo "Step 1 of 5: Preparing container"
+echo " "
 
 # Installing additional packages and setting uid/gid
 if [ "$packages" != "" ] || [ $(cat /etc/group | grep 'iobroker:' | cut -d':' -f3) != $setgid ] || [ $(cat /etc/passwd | grep 'iobroker:' | cut -d':' -f3) != $setuid ] || [ -f /opt/.firstrun ]
@@ -97,6 +99,7 @@ cd /opt/iobroker
 #####
 echo "-------------------------------------------------------"
 echo "Step 2 of 5: Detecting ioBroker installation"
+echo " "
 
 if [ `find /opt/iobroker -type f | wc -l` -lt 1 ]
 then
@@ -147,6 +150,7 @@ fi
 #####
 echo "-------------------------------------------------------"
 echo "Step 3 of 5: Checking ioBroker installation"
+echo " "
 
 # (Re)Setting permissions to "/opt/iobroker" and "/opt/scripts"
 echo "(Re)Setting folder permissions (This might take a while! Please be patient!)..."
@@ -182,6 +186,7 @@ fi
 #####
 echo "-------------------------------------------------------"
 echo "Step 4 of 5: Applying special settings"
+echo " "
 echo "Some adapters have special requirements/ settings which can be activated by the use of environment variables."
 echo "For more information take a look at readme.md on Github!"
 
@@ -427,6 +432,7 @@ fi
 #####
 echo "-------------------------------------------------------"
 echo "Step 5 of 5: ioBroker startup"
+echo " "
 
 # Setting healthcheck status to "running"
 echo "running" > /opt/scripts/.docker_config/.healthcheck

@@ -26,7 +26,7 @@ jobs:
         - NODEJS=node12
       script:
         - sed -i "s/\$VERSION/${VERSION}/g" $NODEJS/$ARCH/scripts/iobroker_startup.sh
-        - docker build -t "dontobi/iobroker.docker:$ARCH-$NODEJS-$VERSION" ./node12/amd64
+        - docker build -t "dontobi/iobroker.docker:$VERSION-$NODEJS-$ARCH" ./node12/amd64
     - stage: Build images
       env:
         - ARCH=amd64
@@ -34,7 +34,7 @@ jobs:
         - NODEJS=node14
       script:
         - sed -i "s/\$VERSION/${VERSION}/g" $NODEJS/$ARCH/scripts/iobroker_startup.sh
-        - docker build -t "dontobi/iobroker.docker:$ARCH-$NODEJS-$VERSION" ./node14/amd64
+        - docker build -t "dontobi/iobroker.docker:$VERSION-$NODEJS-$ARCH" ./node14/amd64
     - stage: Build images
       env:
         - ARCH=aarch64
@@ -43,7 +43,7 @@ jobs:
       script:
         - docker run --rm --privileged multiarch/qemu-user-static:register --reset
         - sed -i "s/\$VERSION/${VERSION}/g" $NODEJS/$ARCH/scripts/iobroker_startup.sh
-        - docker build -t "dontobi/iobroker.docker:$ARCH-$NODEJS-$VERSION" ./node12/aarch64
+        - docker build -t "dontobi/iobroker.docker:$VERSION-$NODEJS-$ARCH" ./node12/aarch64
     - stage: Build images
       env:
         - ARCH=aarch64
@@ -52,7 +52,7 @@ jobs:
       script:
         - docker run --rm --privileged multiarch/qemu-user-static:register --reset
         - sed -i "s/\$VERSION/${VERSION}/g" $NODEJS/$ARCH/scripts/iobroker_startup.sh
-        - docker build -t "dontobi/iobroker.docker:$ARCH-$NODEJS-$VERSION" ./node14/aarch64
+        - docker build -t "dontobi/iobroker.docker:$VERSION-$NODEJS-$ARCH" ./node14/aarch64
     - stage: Build images
       env:
         - ARCH=armv7hf
@@ -61,7 +61,7 @@ jobs:
       script:
         - docker run --rm --privileged multiarch/qemu-user-static:register --reset
         - sed -i "s/\$VERSION/${VERSION}/g" $NODEJS/$ARCH/scripts/iobroker_startup.sh
-        - docker build -t "dontobi/iobroker.docker:$ARCH-$NODEJS-$VERSION" ./node12/armv7hf
+        - docker build -t "dontobi/iobroker.docker:$VERSION-$NODEJS-$ARCH" ./node12/armv7hf
     - stage: Build images
       env:
         - ARCH=armv7hf
@@ -70,7 +70,7 @@ jobs:
       script:
         - docker run --rm --privileged multiarch/qemu-user-static:register --reset
         - sed -i "s/\$VERSION/${VERSION}/g" $NODEJS/$ARCH/scripts/iobroker_startup.sh
-        - docker build -t "dontobi/iobroker.docker:$ARCH-$NODEJS-$VERSION" ./node14/armv7hf
+        - docker build -t "dontobi/iobroker.docker:$VERSION-$NODEJS-$ARCH" ./node14/armv7hf
 
     - stage: Manifest
       env:
@@ -82,19 +82,19 @@ after_success:
 # tag and push built images
   - >
     if [ "$TRAVIS_BRANCH" == "main" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$JOB_NAME" == "Build images" ] ; then
-      docker push dontobi/iobroker.docker:$ARCH-$NODEJS-$VERSION
+      docker push dontobi/iobroker.docker:$VERSION-$NODEJS-$ARCH
     fi
 
 # update repository manifest for multiarch and push to hub
   - >
     if [ "$TRAVIS_BRANCH" == "main" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$JOB_NAME" == "Manifest" ]; then
-      cat manifest.yml | sed "s/\$VERSION/${VERSION}/g" > manifest.yaml
+      #cat manifest.yml | sed "s/\$VERSION/${VERSION}/g" > manifest.yaml
 
-      #manifest for image: dontobi/iobroker.docker:version
-      cat manifest.yaml | sed "s/\$DOCKERTAG/${VERSION}/g" > manifestversion.yaml
+      #manifest for image: dontobi/iobroker.docker:version-node
+      cat manifest.yaml | sed "s/\$DOCKERTAG/${VERSION}-${NODEJS}/g" > manifestversion.yaml
 
       #manifest for image: dontobi/iobroker.docker:latest
-      cat manifest.yaml | sed "s/\$DOCKERTAG/latest/g" > manifestlatest.yaml
+      cat manifest.yaml | sed "s/\$DOCKERTAG/latest-${NODEJS}/g" > manifestlatest.yaml
 
       #push to hub
       mv manifestversion.yaml iobroker.yaml
