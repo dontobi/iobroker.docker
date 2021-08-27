@@ -3,9 +3,9 @@
 name: Build Docker image from main
 
 on:
-  release:
-    types:
-      - published
+  push:
+    branches:
+      - main
 
 jobs:
   bulid_latest:
@@ -153,7 +153,6 @@ jobs:
           file: ./node16/arm64v8/Dockerfile
           push: true
           platforms: linux/arm64
-          tags: dontobi/iobroker.docker:${{ env.version }}-node16
           tags: |
             dontobi/iobroker.docker:${{ env.version }}-node16,
             dontobi/iobroker.docker:latest-node16
