@@ -1,0 +1,8 @@
+image: dontobi/iobroker.docker:$VERSION-node14-arm32v7
+manifests:
+  -
+    image: dontobi/iobroker.docker:$VERSION-node14-arm32v7
+    platform:
+      architecture: arm
+      variant: v7
+      os: linux

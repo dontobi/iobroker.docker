@@ -1,0 +1,36 @@
+image: ghcr.io/dontobi/iobroker.docker:$DOCKERTAG
+manifests:
+  -
+    image: ghcr.io/dontobi/iobroker.docker:$VERSION-node12-amd64
+    platform:
+      architecture: amd64
+      os: linux
+  -
+    image: ghcr.io/dontobi/iobroker.docker:$VERSION-node12-arm64v8
+    platform:
+      architecture: arm64
+      variant: v8
+      os: linux
+  -
+    image: ghcr.io/dontobi/iobroker.docker:$VERSION-node12-arm32v7
+    platform:
+      architecture: arm
+      variant: v7
+      os: linux
+  -
+    image: ghcr.io/dontobi/iobroker.docker:$VERSION-node14-amd64
+    platform:
+      architecture: amd64
+      os: linux
+  -
+    image: ghcr.io/dontobi/iobroker.docker:$VERSION-node14-arm64v8
+    platform:
+      architecture: arm64
+      variant: v8
+      os: linux
+  -
+    image: ghcr.io/dontobi/iobroker.docker:$VERSION-node14-arm32v7
+    platform:
+      architecture: arm
+      variant: v7
+      os: linux
