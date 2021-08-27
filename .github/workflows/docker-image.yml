@@ -8,8 +8,12 @@ on:
       - main
 
 jobs:
-  bulid_latest:
+  bulid:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: ["arm32v7", "arm64v8", "amd64"]
+        nodejs: ["node12", "node14"]
     steps:
       - name: Checkout (main)
         uses: actions/checkout@v2.3.4
@@ -17,13 +21,13 @@ jobs:
           repository: 'dontobi/ioBroker.docker'
           ref: 'main'
 
-      - name: Get and write version and date
+      - name: Get and write version
         id: version
         run: |
           VERSION="$(cat .VERSION)"
-          DATI="$(date --rfc-3339=seconds | sed 's/ /T/')"
           echo "This is the Version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_ENV
+<<<<<<< Updated upstream
           echo "This is the Buildnumber/Timestamp: $DATI"
           echo "dati=$DATI" >> $GITHUB_ENV
           sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node12/amd64/Dockerfile > ./node12/amd64/Dockerfile.tmp
@@ -44,6 +48,8 @@ jobs:
           mv -f ./node16/arm32v7/Dockerfile.tmp ./node16/arm32v7/Dockerfile
           sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node16/arm64v8/Dockerfile > ./node16/arm64v8/Dockerfile.tmp
           mv -f ./node16/arm64v8/Dockerfile.tmp ./node16/arm64v8/Dockerfile
+=======
+>>>>>>> Stashed changes
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
@@ -58,14 +64,15 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
 
-      - name: Build Docker image (node12-amd64)
+      - name: Build Docker image
         uses: docker/build-push-action@v2.7.0
         with:
-          context: ./node12/amd64
-          file: ./node12/amd64/Dockerfile
+          context: ./${{ matrix.nodejs }}
+          file: ./${{ matrix.nodejs }}/Dockerfile.${{ matrix.arch }}
           push: true
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
+<<<<<<< Updated upstream
             dontobi/iobroker.docker:${{ env.version }}-node12,
             dontobi/iobroker.docker:latest-node12
 
@@ -156,6 +163,10 @@ jobs:
           tags: |
             dontobi/iobroker.docker:${{ env.version }}-node16,
             dontobi/iobroker.docker:latest-node16
+=======
+            dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }},
+            dontobi/iobroker.docker:latest-${{ matrix.nodejs }}
+>>>>>>> Stashed changes
 
         env:
           OWNER: dontobi

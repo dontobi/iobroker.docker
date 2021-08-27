@@ -20,9 +20,6 @@ docker run -p 8081:8081 --name iobroker -v iobroker-data:/opt/iobroker dontobi/i
 
 ioBroker Docker Container - Node.js 14
 docker run -p 8081:8081 --name iobroker -v iobroker-data:/opt/iobroker dontobi/iobroker.docker:latest-node14
-
-ioBroker Docker Container - Node.js 16
-docker run -p 8081:8081 --name iobroker -v iobroker-data:/opt/iobroker dontobi/iobroker.docker:latest-node16
 ```
 
 ### Environment variables
