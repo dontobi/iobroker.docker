@@ -6,7 +6,7 @@ on:
   release:
     types:
       - published
-      
+
 jobs:
   bulid_latest:
     runs-on: ubuntu-latest
@@ -56,14 +56,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
-          
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1.10.0
-        with:
-          registry: ghcr.io
-          username: ${{ secrets.PACKAGES_USER }}
-          password: ${{ secrets.PACKAGES_PASS }}
-  
+
       - name: Build Docker image (node12-amd64)
         uses: docker/build-push-action@v2.6.1
         with:
@@ -73,8 +66,7 @@ jobs:
           platforms: linux/amd64
           tags: |
             dontobi/iobroker.docker:${{ env.version }}-node12-amd64,
-            ghcr.io/dontobi/iobroker.docker:${{ env.version }}-node12-amd64
-          
+
       - name: Build Docker image (node12-armv32v7)
         uses: docker/build-push-action@v2.6.1
         with:
@@ -84,8 +76,7 @@ jobs:
           platforms: linux/arm/v7
           tags: |
             dontobi/iobroker.docker:${{ env.version }}-node12-arm32v7,
-            ghcr.io/dontobi/iobroker.docker:${{ env.version }}-node12-arm32v7
-      
+
       - name: Build Docker image (node12-arm64v8)
         uses: docker/build-push-action@v2.6.1
         with:
@@ -95,8 +86,7 @@ jobs:
           platforms: linux/arm64
           tags: |
             dontobi/iobroker.docker:${{ env.version }}-node12-arm64v8,
-            ghcr.io/dontobi/iobroker.docker:${{ env.version }}-node12-arm64v8
-      
+
       - name: Build Docker image (node14-amd64)
         uses: docker/build-push-action@v2.6.1
         with:
@@ -106,8 +96,7 @@ jobs:
           platforms: linux/amd64
           tags: |
             dontobi/iobroker.docker:${{ env.version }}-node14-amd64,
-            ghcr.io/dontobi/iobroker.docker:${{ env.version }}-node14-amd64
-          
+
       - name: Build Docker image (node14-armv32v7)
         uses: docker/build-push-action@v2.6.1
         with:
@@ -117,8 +106,7 @@ jobs:
           platforms: linux/arm/v7
           tags: |
             dontobi/iobroker.docker:${{ env.version }}-node14-arm32v7,
-            ghcr.io/dontobi/iobroker.docker:${{ env.version }}-node14-arm32v7
-      
+
       - name: Build Docker image (node14-arm64v8)
         uses: docker/build-push-action@v2.6.1
         with:
@@ -128,34 +116,14 @@ jobs:
           platforms: linux/arm64
           tags: |
             dontobi/iobroker.docker:${{ env.version }}-node14-arm64v8,
-            ghcr.io/dontobi/iobroker.docker:${{ env.version }}-node14-arm64v8
-          
+
       - name: Create and push manifests
         run: |
           sed -e "s/\${VERSION}/${{ env.version }}/g" -e "s/\${DOCKERTAG}/latest/g" ./manifest.yml > manifest_latest.yaml
           ./manifest-tool --username ${{ secrets.DOCKER_USER }} --password ${{ secrets.DOCKER_PASS }} push from-spec manifest_latest.yaml
           sed -e "s/\${VERSION}/${{ env.version }}/g" -e "s/\${DOCKERTAG}/${{ env.version }}/g" ./manifest.yml > manifest_version.yaml
           ./manifest-tool --username ${{ secrets.DOCKER_USER }} --password ${{ secrets.DOCKER_PASS }} push from-spec manifest_version.yaml
-          sed -e "s/\${VERSION}/${{ env.version }}/g" -e "s/\${DOCKERTAG}/latest/g" ./manifest_ghcr.yml > manifest_ghcr_latest.yaml
-          ./manifest-tool --username ${{ secrets.PACKAGES_USER }} --password ${{ secrets.PACKAGES_PASS }} push from-spec manifest_ghcr_latest.yaml
-          sed -e "s/\${VERSION}/${{ env.version }}/g" -e "s/\${DOCKERTAG}/${{ env.version }}/g" ./manifest_ghcr.yml > manifest_ghcr_version.yaml
-          ./manifest-tool --username ${{ secrets.PACKAGES_USER }} --password ${{ secrets.PACKAGES_PASS }} push from-spec manifest_ghcr_version.yaml
 
-      - name: Delete untagged images from GitHub packages
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{ secrets.PACKAGES_PASS }}
-          script: |
-            const response = await github.request("GET /users/${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions",
-              { per_page: ${{ env.PER_PAGE }}
-            });
-            for(version of response.data) {
-                if (version.metadata.container.tags.length == 0) {
-                    console.log("delete " + version.id)
-                    const deleteResponse = await github.request("DELETE /user/packages/container/${{ env.PACKAGE_NAME }}/versions/" + version.id, { });
-                    console.log("status " + deleteResponse.status)
-                }
-            }
         env:
           OWNER: dontobi
           PACKAGE_NAME: iobroker.docker
