@@ -1,4 +1,4 @@
-FROM balenalib/armv7hf-node:12-buster
+FROM balenalib/amd64-node:16-buster
 MAINTAINER dontobi <github@myhome.zone>
 
 # Install ioBroker

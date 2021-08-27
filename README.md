@@ -7,11 +7,6 @@
 # ioBroker for Docker
 IoBroker for Docker is a ready to use Docker image for [ioBroker IoT platform](http://www.iobroker.net).
 
-## Important notice
-In general a new major version of the image comes with a new, preinstalled major node version!
-If you are updating an existing installation to a new major version you have to perform some additional steps inside ioBroker! For more details please see official ioBroker documentation: [EN](https://www.iobroker.net/#en/documentation/install/updatenode.md) | [DE](https://www.iobroker.net/#de/documentation/install/updatenode.md).<br>
-In any case make a backup first!
-
 ## Getting started
 Please do not contact me directly for any support-reasons. Every support question should be answered in a public place so every user can benefit from it . Thanks in advance.
 If you think you found a bug or simply want to request a new feature please open an issue on Github so we can talk about.
@@ -20,7 +15,14 @@ The following ways to get iobroker-container running are only examples. Maybe yo
 ### Running from command line
 For taking a first look at the iobroker docker container it would be enough to simply run the following basic docker run command:
 ```
-docker run -p 8081:8081 --name iobroker -v iobroker-data:/opt/iobroker dontobi/iobroker.docker:latest
+ioBroker Docker Container - Node.js 12 (recommended)
+docker run -p 8081:8081 --name iobroker -v iobroker-data:/opt/iobroker dontobi/iobroker.docker:latest-node12
+
+ioBroker Docker Container - Node.js 14
+docker run -p 8081:8081 --name iobroker -v iobroker-data:/opt/iobroker dontobi/iobroker.docker:latest-node14
+
+ioBroker Docker Container - Node.js 16
+docker run -p 8081:8081 --name iobroker -v iobroker-data:/opt/iobroker dontobi/iobroker.docker:latest-node16
 ```
 
 ### Environment variables

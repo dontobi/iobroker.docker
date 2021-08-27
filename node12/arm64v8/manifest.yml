@@ -1,8 +1,0 @@
-image: dontobi/iobroker.docker:$VERSION-node12-arm64v8
-manifests:
-  -
-    image: dontobi/iobroker.docker:$VERSION-node12-arm64v8
-    platform:
-      architecture: arm64
-      variant: v8
-      os: linux

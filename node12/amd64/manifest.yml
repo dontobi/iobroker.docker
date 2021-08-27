@@ -1,7 +1,0 @@
-image: dontobi/iobroker.docker:$VERSION-node12-amd64
-manifests:
-  -
-    image: dontobi/iobroker.dontobi:$VERSION-node12-amd64
-    platform:
-      architecture: amd64
-      os: linux
