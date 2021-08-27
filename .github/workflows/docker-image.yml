@@ -38,11 +38,11 @@ jobs:
           mv -f ./node14/arm32v7/Dockerfile.tmp ./node14/arm32v7/Dockerfile
           sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node14/arm64v8/Dockerfile > ./node14/arm64v8/Dockerfile.tmp
           mv -f ./node14/arm64v8/Dockerfile.tmp ./node14/arm64v8/Dockerfile
-          sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node16/amd64/Dockerfile > ./node14/amd64/Dockerfile.tmp
+          sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node16/amd64/Dockerfile > ./node16/amd64/Dockerfile.tmp
           mv -f ./node16/amd64/Dockerfile.tmp ./node16/amd64/Dockerfile
-          sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node16/arm32v7/Dockerfile > ./node14/arm32v7/Dockerfile.tmp
+          sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node16/arm32v7/Dockerfile > ./node16/arm32v7/Dockerfile.tmp
           mv -f ./node16/arm32v7/Dockerfile.tmp ./node16/arm32v7/Dockerfile
-          sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node16/arm64v8/Dockerfile > ./node14/arm64v8/Dockerfile.tmp
+          sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node16/arm64v8/Dockerfile > ./node16/arm64v8/Dockerfile.tmp
           mv -f ./node16/arm64v8/Dockerfile.tmp ./node16/arm64v8/Dockerfile
 
       - name: Set up QEMU
