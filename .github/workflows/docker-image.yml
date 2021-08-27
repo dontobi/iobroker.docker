@@ -27,29 +27,6 @@ jobs:
           VERSION="$(cat .VERSION)"
           echo "This is the Version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_ENV
-<<<<<<< Updated upstream
-          echo "This is the Buildnumber/Timestamp: $DATI"
-          echo "dati=$DATI" >> $GITHUB_ENV
-          sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node12/amd64/Dockerfile > ./node12/amd64/Dockerfile.tmp
-          mv -f ./node12/amd64/Dockerfile.tmp ./node12/amd64/Dockerfile
-          sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node12/arm32v7/Dockerfile > ./node12/arm32v7/Dockerfile.tmp
-          mv -f ./node12/arm32v7/Dockerfile.tmp ./node12/arm32v7/Dockerfile
-          sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node12/arm64v8/Dockerfile > ./node12/arm64v8/Dockerfile.tmp
-          mv -f ./node12/arm64v8/Dockerfile.tmp ./node12/arm64v8/Dockerfile
-          sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node14/amd64/Dockerfile > ./node14/amd64/Dockerfile.tmp
-          mv -f ./node14/amd64/Dockerfile.tmp ./node14/amd64/Dockerfile
-          sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node14/arm32v7/Dockerfile > ./node14/arm32v7/Dockerfile.tmp
-          mv -f ./node14/arm32v7/Dockerfile.tmp ./node14/arm32v7/Dockerfile
-          sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node14/arm64v8/Dockerfile > ./node14/arm64v8/Dockerfile.tmp
-          mv -f ./node14/arm64v8/Dockerfile.tmp ./node14/arm64v8/Dockerfile
-          sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node16/amd64/Dockerfile > ./node16/amd64/Dockerfile.tmp
-          mv -f ./node16/amd64/Dockerfile.tmp ./node16/amd64/Dockerfile
-          sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node16/arm32v7/Dockerfile > ./node16/arm32v7/Dockerfile.tmp
-          mv -f ./node16/arm32v7/Dockerfile.tmp ./node16/arm32v7/Dockerfile
-          sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./node16/arm64v8/Dockerfile > ./node16/arm64v8/Dockerfile.tmp
-          mv -f ./node16/arm64v8/Dockerfile.tmp ./node16/arm64v8/Dockerfile
-=======
->>>>>>> Stashed changes
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
@@ -72,101 +49,8 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
-<<<<<<< Updated upstream
-            dontobi/iobroker.docker:${{ env.version }}-node12,
-            dontobi/iobroker.docker:latest-node12
-
-      - name: Build Docker image (node12-armv32v7)
-        uses: docker/build-push-action@v2.7.0
-        with:
-          context: ./node12/arm32v7
-          file: ./node12/arm32v7/Dockerfile
-          push: true
-          platforms: linux/arm/v7
-          tags: |
-            dontobi/iobroker.docker:${{ env.version }}-node12,
-            dontobi/iobroker.docker:latest-node12
-
-      - name: Build Docker image (node12-arm64v8)
-        uses: docker/build-push-action@v2.7.0
-        with:
-          context: ./node12/arm64v8
-          file: ./node12/arm64v8/Dockerfile
-          push: true
-          platforms: linux/arm64
-          tags: |
-            dontobi/iobroker.docker:${{ env.version }}-node12,
-            dontobi/iobroker.docker:latest-node12
-
-      - name: Build Docker image (node14-amd64)
-        uses: docker/build-push-action@v2.7.0
-        with:
-          context: ./node14/amd64
-          file: ./node14/amd64/Dockerfile
-          push: true
-          platforms: linux/amd64
-          tags: |
-            dontobi/iobroker.docker:${{ env.version }}-node14,
-            dontobi/iobroker.docker:latest-node14
-
-      - name: Build Docker image (node14-armv32v7)
-        uses: docker/build-push-action@v2.7.0
-        with:
-          context: ./node14/arm32v7
-          file: ./node14/arm32v7/Dockerfile
-          push: true
-          platforms: linux/arm/v7
-          tags: |
-            dontobi/iobroker.docker:${{ env.version }}-node14,
-            dontobi/iobroker.docker:latest-node14
-
-      - name: Build Docker image (node14-arm64v8)
-        uses: docker/build-push-action@v2.7.0
-        with:
-          context: ./node14/arm64v8
-          file: ./node14/arm64v8/Dockerfile
-          push: true
-          platforms: linux/arm64
-          tags: |
-            dontobi/iobroker.docker:${{ env.version }}-node14,
-            dontobi/iobroker.docker:latest-node14
-
-      - name: Build Docker image (node16-amd64)
-        uses: docker/build-push-action@v2.7.0
-        with:
-          context: ./node16/amd64
-          file: ./node16/amd64/Dockerfile
-          push: true
-          platforms: linux/amd64
-          tags: |
-            dontobi/iobroker.docker:${{ env.version }}-node16,
-            dontobi/iobroker.docker:latest-node16
-
-      - name: Build Docker image (node16-armv32v7)
-        uses: docker/build-push-action@v2.7.0
-        with:
-          context: ./node16/arm32v7
-          file: ./node16/arm32v7/Dockerfile
-          push: true
-          platforms: linux/arm/v7
-          tags: |
-            dontobi/iobroker.docker:${{ env.version }}-node16,
-            dontobi/iobroker.docker:latest-node16
-
-      - name: Build Docker image (node16-arm64v8)
-        uses: docker/build-push-action@v2.7.0
-        with:
-          context: ./node16/arm64v8
-          file: ./node16/arm64v8/Dockerfile
-          push: true
-          platforms: linux/arm64
-          tags: |
-            dontobi/iobroker.docker:${{ env.version }}-node16,
-            dontobi/iobroker.docker:latest-node16
-=======
             dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }},
             dontobi/iobroker.docker:latest-${{ matrix.nodejs }}
->>>>>>> Stashed changes
 
         env:
           OWNER: dontobi
