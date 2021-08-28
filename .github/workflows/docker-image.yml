@@ -24,19 +24,8 @@ jobs:
       - name: Get and write version
         id: version
         run: |
-          echo ::set-output name=version::$(cat .VERSION)
-          if [[ ${{ matrix.arch }} == arm32v7 ]]; then
-            echo ::set-output name=plattform::linux/arm/v7
-          elif [[ ${{ matrix.arch }} == arm64v8 ]]; then
-            echo ::set-output name=plattform::linux/arm64
-          elif [[ ${{ matrix.arch }} == amd64 ]]; then
-            echo ::set-output name=plattform::linux/amd64
-          fi
-
-      - name: Set up manifest tool
-        run: |
-          wget https://github.com/estesp/manifest-tool/releases/download/v1.0.3/manifest-tool-linux-amd64 -O manifest-tool
-          chmod +x manifest-tool
+          VERSION="$(cat .VERSION)"
+          echo "version=$VERSION" >> $GITHUB_ENV
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
@@ -57,10 +46,9 @@ jobs:
           context: ./${{ matrix.nodejs }}/
           file: ./${{ matrix.nodejs }}/Dockerfile.${{ matrix.arch }}
           push: true
-          platforms: ${{ steps.prep.outputs.plattform }}
           tags: |
-            dontobi/iobroker.docker:${{ steps.prep.outputs.version }}-${{ matrix.nodejs }}-${{ matrix.arch }},
-            dontobi/iobroker.docker:${{ steps.prep.outputs.version }}-${{ matrix.nodejs }}
+            dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }}-${{ matrix.arch }},
+            dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }}
 
         env:
           OWNER: dontobi
