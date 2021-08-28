@@ -27,6 +27,14 @@ jobs:
           VERSION="$(cat .VERSION)"
           echo "This is the Version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_ENV
+          if [[ ${{ matrix.arch }} == arm32v7 ]]; then
+            PLATTFORM=linux/arm/v7
+          elif [[ ${{ matrix.arch }} == arm64v8 ]]; then
+            PLATTFORM=linux/arm64
+          elif [[ ${{ matrix.arch }} == amd64 ]]; then
+            PLATTFORM=linux/amd64
+          fi
+          echo ::set-output name=plattform::${PLATTFORM}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
@@ -47,8 +55,9 @@ jobs:
           context: ./${{ matrix.nodejs }}
           file: ./${{ matrix.nodejs }}/Dockerfile.${{ matrix.arch }}
           push: true
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          platforms: ${{ steps.prep.outputs.platzform }}
           tags: |
+            dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }}-${{ matrix.arch }},
             dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }},
             dontobi/iobroker.docker:latest-${{ matrix.nodejs }}
 
