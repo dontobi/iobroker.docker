@@ -10,10 +10,6 @@ on:
 jobs:
   bulid:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch: ["arm32v7", "arm64v8", "amd64"]
-        nodejs: ["node12", "node14"]
     steps:
       - name: Checkout (main)
         uses: actions/checkout@v2.3.4
@@ -45,13 +41,59 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
 
-      - name: Build Docker image
+      - name: Build Docker image (node12-amd64)
         uses: docker/build-push-action@v2.7.0
         with:
-          context: ./${{ matrix.nodejs }}/
-          file: ./${{ matrix.nodejs }}/Dockerfile.${{ matrix.arch }}
+          context: ./node12
+          file: ./node12/Dockerfile.amd64
           push: true
-          tags: dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }}-${{ matrix.arch }}
+          platforms: linux/amd64
+          tags: dontobi/iobroker.docker:${{ env.version }}-node12-amd64
+
+      - name: Build Docker image (node12-arm32v7)
+        uses: docker/build-push-action@v2.7.0
+        with:
+          context: ./node12
+          file: ./node12/Dockerfile.arm32v7
+          push: true
+          platforms: linux/arm/v7
+          tags: dontobi/iobroker.docker:${{ env.version }}-node12-arm32v7
+
+      - name: Build Docker image (node12-arm64v8)
+        uses: docker/build-push-action@v2.7.0
+        with:
+          context: ./node12
+          file: ./node12/Dockerfile.arm64v8
+          push: true
+          platforms: linux/arm64
+          tags: dontobi/iobroker.docker:${{ env.version }}-node12-arm64v8
+
+      - name: Build Docker image (node14-amd64)
+        uses: docker/build-push-action@v2.7.0
+        with:
+          context: ./node14
+          file: ./node14/Dockerfile.amd64
+          push: true
+          platforms: linux/amd64
+          tags: dontobi/iobroker.docker:${{ env.version }}-node14-amd64
+
+      - name: Build Docker image (node14-arm32v7)
+        uses: docker/build-push-action@v2.7.0
+        with:
+          context: ./node14
+          file: ./node14/Dockerfile.arm32v7
+          push: true
+          platforms: linux/arm/v7
+          tags: dontobi/iobroker.docker:${{ env.version }}-node14-arm32v7
+
+      - name: Build Docker image (node14-arm64v8)
+        uses: docker/build-push-action@v2.7.0
+        with:
+          context: ./node14
+          file: ./node14/Dockerfile.arm64v8
+          push: true
+          platforms: linux/arm64
+          tags: dontobi/iobroker.docker:${{ env.version }}-node14-arm64v8
 
       - name: Create and push manifests
         run: |
