@@ -36,6 +36,11 @@ jobs:
           fi
           echo ::set-output name=plattform::${PLATTFORM}
 
+      - name: Set up manifest tool
+        run: |
+          wget https://github.com/estesp/manifest-tool/releases/download/v1.0.3/manifest-tool-linux-amd64 -O manifest-tool
+          chmod +x manifest-tool
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
 
@@ -57,7 +62,16 @@ jobs:
           push: true
           platforms: ${{ steps.prep.outputs.plattform }}
           tags: |
-            dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }}-${{ matrix.arch }}
+            dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }}-${{ matrix.arch }},
+            dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }}
+            
+      - name: Build an push Docker image (node12)
+        run: |
+          docker build -t "dontobi/iobroker.docker:latest-node14" ./node14/Dockerfile.amd64
+          docker build -t "dontobi/iobroker.docker:latest-node14" ./node14/Dockerfile.arm32v7
+          docker build -t "dontobi/iobroker.docker:latest-node14" ./node14/Dockerfile.arm64v8
+          docker tag "dontobi/iobroker.docker:latest-node14"
+          docker push "dontobi/iobroker.docker:latest-node14"
 
         env:
           OWNER: dontobi
