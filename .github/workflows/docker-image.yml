@@ -107,8 +107,3 @@ jobs:
           ./manifest-tool --username ${{ secrets.DOCKER_USER }} --password ${{ secrets.DOCKER_PASS }} push from-spec manifest_version_node14.yaml
           sed -e "s/\${VERSION}/${{ env.version }}/g" -e "s/\${NODEJS}/node12/g" -e "s/\${DOCKERTAG}/latest/g" ./manifest.yml > manifest_latest.yaml
           ./manifest-tool --username ${{ secrets.DOCKER_USER }} --password ${{ secrets.DOCKER_PASS }} push from-spec manifest_latest.yaml
-
-        env:
-          OWNER: dontobi
-          PACKAGE_NAME: iobroker.docker
-          PER_PAGE: 100
