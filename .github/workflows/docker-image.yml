@@ -24,17 +24,14 @@ jobs:
       - name: Get and write version
         id: version
         run: |
-          VERSION="$(cat .VERSION)"
-          echo "This is the Version: $VERSION"
-          echo "version=$VERSION" >> $GITHUB_ENV
+          echo ::set-output name=version::$(cat .VERSION)
           if [[ ${{ matrix.arch }} == arm32v7 ]]; then
-            PLATTFORM=linux/arm/v7
+            echo ::set-output name=plattform::linux/arm/v7
           elif [[ ${{ matrix.arch }} == arm64v8 ]]; then
-            PLATTFORM=linux/arm64
+            echo ::set-output name=plattform::linux/arm64
           elif [[ ${{ matrix.arch }} == amd64 ]]; then
-            PLATTFORM=linux/amd64
+            echo ::set-output name=plattform::linux/amd64
           fi
-          echo ::set-output name=plattform::${PLATTFORM}
 
       - name: Set up manifest tool
         run: |
@@ -62,16 +59,8 @@ jobs:
           push: true
           platforms: ${{ steps.prep.outputs.plattform }}
           tags: |
-            dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }}-${{ matrix.arch }},
-            dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }}
-            
-      - name: Build an push Docker image (node14)
-        run: |
-          docker build -t "dontobi/iobroker.docker:latest-node14" ./node14/Dockerfile.amd64
-          docker build -t "dontobi/iobroker.docker:latest-node14" ./node14/Dockerfile.arm32v7
-          docker build -t "dontobi/iobroker.docker:latest-node14" ./node14/Dockerfile.arm64v8
-          docker tag "dontobi/iobroker.docker:latest-node14"
-          docker push "dontobi/iobroker.docker:latest-node14"
+            dontobi/iobroker.docker:${{ steps.prep.outputs.version }}-${{ matrix.nodejs }}-${{ matrix.arch }},
+            dontobi/iobroker.docker:${{ steps.prep.outputs.version }}-${{ matrix.nodejs }}
 
         env:
           OWNER: dontobi
