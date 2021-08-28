@@ -57,7 +57,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v2.7.0
         with:
-          context: ./${{ matrix.nodejs }}
+          context: ./${{ matrix.nodejs }}/
           file: ./${{ matrix.nodejs }}/Dockerfile.${{ matrix.arch }}
           push: true
           platforms: ${{ steps.prep.outputs.plattform }}
@@ -65,7 +65,7 @@ jobs:
             dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }}-${{ matrix.arch }},
             dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }}
             
-      - name: Build an push Docker image (node12)
+      - name: Build an push Docker image (node14)
         run: |
           docker build -t "dontobi/iobroker.docker:latest-node14" ./node14/Dockerfile.amd64
           docker build -t "dontobi/iobroker.docker:latest-node14" ./node14/Dockerfile.arm32v7
