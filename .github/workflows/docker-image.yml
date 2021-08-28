@@ -27,6 +27,11 @@ jobs:
           VERSION="$(cat .VERSION)"
           echo "version=$VERSION" >> $GITHUB_ENV
 
+      - name: Set up manifest tool
+        run: |
+          wget https://github.com/estesp/manifest-tool/releases/download/v1.0.3/manifest-tool-linux-amd64 -O manifest-tool
+          chmod +x manifest-tool
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
 
@@ -46,9 +51,20 @@ jobs:
           context: ./${{ matrix.nodejs }}/
           file: ./${{ matrix.nodejs }}/Dockerfile.${{ matrix.arch }}
           push: true
-          tags: |
-            dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }}-${{ matrix.arch }},
-            dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }}
+          tags: dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }}-${{ matrix.arch }}
+
+      - name: Create and push manifests
+        run: |
+          sed -e "s/\${VERSION}/${{ env.version }}/g" -e "s/\${NODEJS}/node12/g" -e "s/\${DOCKERTAG}/latest-node12/g" ./manifest.yml > manifest_latest_node12.yaml
+          ./manifest-tool --username ${{ secrets.DOCKER_USER }} --password ${{ secrets.DOCKER_PASS }} push from-spec manifest_latest_node12.yaml
+          sed -e "s/\${VERSION}/${{ env.version }}/g" -e "s/\${NODEJS}/node14/g" -e "s/\${DOCKERTAG}/latest-node14/g" ./manifest.yml > manifest_latest_node14.yaml
+          ./manifest-tool --username ${{ secrets.DOCKER_USER }} --password ${{ secrets.DOCKER_PASS }} push from-spec manifest_latest_node14.yaml
+          sed -e "s/\${VERSION}/${{ env.version }}/g" -e "s/\${NODEJS}/node12/g" -e "s/\${DOCKERTAG}/${{ env.version }}-node12/g" ./manifest.yml > manifest_version_node12.yaml
+          ./manifest-tool --username ${{ secrets.DOCKER_USER }} --password ${{ secrets.DOCKER_PASS }} push from-spec manifest_version_node12.yaml
+          sed -e "s/\${VERSION}/${{ env.version }}/g" -e "s/\${NODEJS}/node14/g" -e "s/\${DOCKERTAG}/${{ env.version }}-node14/g" ./manifest.yml > manifest_version_node14.yaml
+          ./manifest-tool --username ${{ secrets.DOCKER_USER }} --password ${{ secrets.DOCKER_PASS }} push from-spec manifest_version_node14.yaml
+          sed -e "s/\${VERSION}/${{ env.version }}/g" -e "s/\${NODEJS}/node12/g" -e "s/\${DOCKERTAG}/latest/g" ./manifest.yml > manifest_latest.yaml
+          ./manifest-tool --username ${{ secrets.DOCKER_USER }} --password ${{ secrets.DOCKER_PASS }} push from-spec manifest_latest.yaml
 
         env:
           OWNER: dontobi
