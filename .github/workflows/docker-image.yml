@@ -55,11 +55,9 @@ jobs:
           context: ./${{ matrix.nodejs }}
           file: ./${{ matrix.nodejs }}/Dockerfile.${{ matrix.arch }}
           push: true
-          platforms: ${{ steps.prep.outputs.platzform }}
+          platforms: ${{ steps.prep.outputs.plattform }}
           tags: |
-            dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }}-${{ matrix.arch }},
-            dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }},
-            dontobi/iobroker.docker:latest-${{ matrix.nodejs }}
+            dontobi/iobroker.docker:${{ env.version }}-${{ matrix.nodejs }}-${{ matrix.arch }}
 
         env:
           OWNER: dontobi
