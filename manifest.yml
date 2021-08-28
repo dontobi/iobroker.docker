@@ -1,18 +1,18 @@
-image: dontobi/iobroker.docker:$DOCKERTAG
+image: dontobi/iobroker.docker:${DOCKERTAG}
 manifests:
   -
-    image: dontobi/iobroker.docker:$VERSION-$NODEJS-amd64
+    image: dontobi/iobroker.docker:${VERSION}-${NODEJS}-amd64
     platform:
       architecture: amd64
       os: linux
   -
-    image: dontobi/iobroker.docker:$VERSION-$NODEJS-arm32v7
+    image: dontobi/iobroker.docker:${VERSION}-${NODEJS}-arm32v7
     platform:
       architecture: arm
       variant: v7
       os: linux
   -
-    image: dontobi/iobroker.docker:$VERSION-$NODEJS-arm64v8
+    image: dontobi/iobroker.docker:${VERSION}-${NODEJS}-arm64v8
     platform:
       architecture: arm64
       variant: v8
