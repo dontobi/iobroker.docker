@@ -1,5 +1,11 @@
 FROM balenalib/amd64-node:12-buster
 MAINTAINER dontobi <github@myhome.zone>
+LABEL org.opencontainers.image.title="ioBroker Docker Image" \
+      org.opencontainers.image.description="Docker image for ioBroker smarthome software" \
+      org.opencontainers.image.authors="github@myhome.zone" \
+      org.opencontainers.image.url="https://github.com/dontobi/ioBroker.docker" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.created="${DATI}"
 
 # Install ioBroker
 RUN apt-get update && apt-get upgrade -y \
@@ -15,7 +21,7 @@ RUN apt-get update && apt-get upgrade -y \
         # Adapter prerequisites (BackitUp, Zigbee and Vodafone-Speedtest)
         cifs-utils libcurl4-openssl-dev libgdcm2-dev nfs-common \
     # Install node-gyp - Node.js native addon build tool
-    && npm install -g node-gyp \
+    # && npm install -g node-gyp \
     # Generate locales en_US.UTF-8 and de_DE.UTF-8
     && sed -i 's/^# *\(de_DE.UTF-8\)/\1/' /etc/locale.gen \
     && sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen \

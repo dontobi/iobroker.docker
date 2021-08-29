@@ -1,0 +1,55 @@
+# Github action to build Docker image from main branch (tag: latest)
+
+name: Build Docker image from main
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (main)
+        uses: actions/checkout@v2.3.4
+        with:
+          repository: 'dontobi/ioBroker.docker'
+          ref: 'main'
+
+      - name: Get and write version
+        id: version
+        run: |
+          VERSION="testbuild"
+          DATI="$(date --rfc-3339=seconds | sed 's/ /T/')"
+          echo "version=$VERSION" >> $GITHUB_ENV
+          echo "dati=$DATI" >> $GITHUB_ENV
+          sed -e "s/\${VERSION}/$VERSION/" -e "s/\${DATI}/$DATI/" ./test/Dockerfile.arm32v7 > ./test/Dockerfile.tmp
+          mv -f ./test/Dockerfile.tmp ./test/Dockerfile.arm32v7
+
+      - name: Set up manifest tool
+        run: |
+          wget https://github.com/estesp/manifest-tool/releases/download/v1.0.3/manifest-tool-linux-amd64 -O manifest-tool
+          chmod +x manifest-tool
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1.2.0
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1.5.1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1.10.0
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v2.7.0
+        with:
+          context: ./test
+          file: ./test/Dockerfile.arm32v7
+          push: true
+          platforms: linux/arm/v7
+          tags: dontobi/iobroker.docker:${{ env.version }}-node14-arm32v7
