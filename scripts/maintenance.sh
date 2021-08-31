@@ -4,8 +4,7 @@
 ##### default settings #####
 ############################
 
-autoconfirm=no              # yould be set to true by commandline option
-
+autoconfirm=no              # could be set to true by commandline option
 
 ####################################
 ##### declaration of functions #####
@@ -14,8 +13,9 @@ autoconfirm=no              # yould be set to true by commandline option
 # display help text
 display_help() {
   echo "This script is build to manage your ioBroker container!"
-  echo "Usage: maintenance [ COMMAND ] [ OPTIONS ]"
-  echo "       maint [ COMMAND ] [ OPTIONS ]"
+  echo ''
+  echo "Usage: maintenance [ COMMAND ] [ OPTION ]"
+  echo "       maint [ COMMAND ] [ OPTION ]"
   echo ''
   echo "COMMANDS"
   echo "------------------"
@@ -23,11 +23,12 @@ display_help() {
   echo "       on         > switches mantenance mode ON"
   echo "       off        > switches mantenance mode OFF and shuts down/ restarts container"
   echo "       upgrade    > will put container to maintenance mode and upgrade iobroker"
+  echo "       help       > shows this help"
   echo ''
   echo "OPTIONS"
   echo "------------------"
-  echo "       -h|--help  > shows this help"  
   echo "       -y|--yes   > confirms the used command without asking"
+  echo "       -h|--help  > shows this help"  
   echo ''  
   exit 0
 }
@@ -83,17 +84,33 @@ switch_on() {
 
 # turn maintenance mode OFF
 switch_off() {
-  echo 'You are now going to deactivate maintenance mode for this container.'
-  echo 'Depending on the restart policy, your container will be stopped/ restarted immediately.'
-  read -p 'Do you want to continue [yes/no]? ' A
-  if [ "$A" == "y" ] || [ "$A" == "Y" ] || [ "$A" == "yes" ]
+  if [ $(cat /opt/scripts/.docker_config/.healthcheck) == 'maintenance' ] && [ "$autoconfirm" == "no" ] # maintenance mode ON / autoconfirm = no
   then
+    echo 'You are now going to deactivate maintenance mode for this container.'
+    echo 'Depending on the restart policy, your container will be stopped/ restarted immediately.'
+    read -p 'Do you want to continue [yes/no]? ' A
+    if [ "$A" == "y" ] || [ "$A" == "Y" ] || [ "$A" == "yes" ]
+    then
+      echo 'Deactivating maintenance mode and forcing container to stop/ restart...'
+      echo "stopping" > /opt/scripts/.docker_config/.healthcheck
+      pkill -u root
+      echo 'Done.'
+      exit 0
+    else
+      exit 0
+    fi
+  elif [ $(cat /opt/scripts/.docker_config/.healthcheck) == 'maintenance' ] && [ "$autoconfirm" == "yes" ] # maintenance mode ON / autoconfirm = yes
+  then
+    echo 'You are now going to deactivate maintenance mode for this container.'
+    echo 'Depending on the restart policy, your container will be stopped/ restarted immediately.'
+    echo 'This command was already confirmed by -y or --yes option.'
     echo 'Deactivating maintenance mode and forcing container to stop/ restart...'
     echo "stopping" > /opt/scripts/.docker_config/.healthcheck
     pkill -u root
+    echo 'Done.'
     exit 0
   else
-    exit 0
+    echo 'Maintenance mode is already turned OFF.'
   fi
 }
 
@@ -129,37 +146,59 @@ upgrade() {
   fi
 }
 
-##############################
-##### parsing parameters #####
-##############################
+########################################
+##### parsing commands and options #####
+########################################
 
-while :; do
-  case $1 in
-    -h|--help)
+# reading all arguments and putting them in reverse
+reverse=
+for i in "$@"; do
+  reverse="$i $reverse"
+done
+
+# checking the arguments 
+for i in $reverse; do
+  case $i in
+    help|-h|--help)
       display_help        # calling function to display help text
-      exit
-      ;;
-    -y|--yes)
-      autoconfirm=yes     # answers prompts with "yes"
+      break
       ;;
     status)
       check_status        # calling function to check maintenance mode status
+      break
       ;;
-    on|-on)
+    on)
       switch_on           # calling function to switch maintenance mode on
-      exit
+      break
+      ;;
+    off)
+      switch_off          # calling function to switch maintenance mode off
+      break
+      ;;
+    upgrade)
+      upgrade             # calling function to upgrade js-controller
+      break
+      ;;
+    -y|--yes)
+      autoconfirm=yes     # setting autoconfrm option to "yes"
+      shift
+      ;;
+    -a=*|--argument=*)    # dummy exaple for parsing option with value
+      ARGUMENT="${i#*=}"
+      shift
       ;;
     --)                   # End of all options.
       shift
       break
       ;;
-    -?*)
-      printf 'WARN: Unknown option (ignored): %s\n' "$1"
+    -?*|?*)
+      echo 'WARN: Unknown parameter. Please try again or see help (-h|--help).'
+      break
       ;;
     *)                    # Default case: No more options, so break out of the loop.
       break
+      ;;
   esac
-  shift
 done
 
 exit 0
