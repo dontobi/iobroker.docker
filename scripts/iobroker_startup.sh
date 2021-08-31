@@ -142,7 +142,7 @@ then
   then
     echo "IoBroker backup file detected in /opt/iobroker. But Multihost is set to \"slave\"."
     echo "Restoring a backup is not supported on Multihost slaves. Please check configuration and start over."
-    echo "For more information see readme.md on Github (https://github.com/buanet/ioBroker.docker)."
+    echo "For more information see readme.md on Github (https://github.com/dontobi/iobroker.docker.docker)."
     exit 1
   else
     echo "IoBroker backup file detected in /opt/iobroker. Preparing restore..."
@@ -303,7 +303,7 @@ elif [ "$multihost" = "master" ] && [ "$objectsdbhost" = "127.0.0.1" ]
 then
   echo "Multihost is set as \"master\" by ENV. But objects db host is set to \"127.0.0.1\" by ENV too."
   echo "This configuration will not work! Please change or remove ENV \"IOB_OBJECTSDB_HOST\" and start over!"
-  echo "For more information see readme.md on Github (https://github.com/buanet/ioBroker.docker)."
+  echo "For more information see readme.md on Github (https://github.com/dontobi/iobroker.docker.docker)."
   exit 1
 elif [ "$multihost" = "master" ] &&  [ "$objectsdbtype" != "" ] && [ "$objectsdbhost" != "" ] && [ "$objectsdbport" != "" ]
 then
@@ -316,7 +316,7 @@ then
   echo "Multihost is set as \"slave\" by ENV. But no external objects db is set."
   echo "You have to configure ENVs \"IOB_OBJECTSDB_TYPE\", \"IOB_OBJECTSDB_HOST\" and \"IOB_OBJECTSDB_PORT\" to connect to a maser objects db."
   echo "Please check your settings and start over."
-  echo "For more information see readme.md on Github (https://github.com/buanet/ioBroker.docker)."
+  echo "For more information see readme.md on Github (https://github.com/dontobi/iobroker.docker.docker)."
   exit 1
 elif [ "$multihost" = "slave" ] && [ "$objectsdbtype" != "" ] && [ "$objectsdbhost" != "" ] && [ "$objectsdbport" != "" ]
 then
@@ -328,7 +328,7 @@ elif [ "$multihost" != "" ]
 then
   echo "Multihost is set but it seems like some configuration is missing."
   echo "Please checke if you have configured the ENVs \"MULTIHOST\", \"IOB_OBJECTSDB_TYPE\", \"IOB_OBJECTSDB_HOST\" and \"IOB_OBJECTSDB_PORT\" correctly and start over."
-  echo "For more information see readme.md on Github (https://github.com/buanet/ioBroker.docker)."
+  echo "For more information see readme.md on Github (https://github.com/dontobi/iobroker.docker.docker)."
   exit 1
 fi
 #Configuring states db host
@@ -344,7 +344,7 @@ elif [ "$multihost" = "master" ] && [ "$statesdbhost" = "127.0.0.1" ]
 then
   echo "Multihost is set as \"master\" by ENV. But states db host is set to \"127.0.0.1\" by ENV too."
   echo "This configuration will not work! Please change or remove ENV \"IOB_STATESDB_HOST\" and start over!"
-  echo "For more information see readme.md on Github (https://github.com/buanet/ioBroker.docker)."
+  echo "For more information see readme.md on Github (https://github.com/dontobi/iobroker.docker.docker)."
   exit 1
 elif [ "$multihost" = "master" ] && [ "$statesdbtype" != "" ] && [ "$statesdbhost" != "" ] && [ "$statesdbport" != "" ]
 then
@@ -357,7 +357,7 @@ then
   echo "Multihost is set as \"slave\" by ENV. But no external states db is set."
   echo "You have to configure ENVs \"IOB_STATESDB_TYPE\", \"IOB_STATESDB_HOST\" and \"IOB_STATESDB_PORT\" to connect to a maser states db."
   echo "Please check your settings and start over."
-  echo "For more information see readme.md on Github (https://github.com/buanet/ioBroker.docker)."
+  echo "For more information see readme.md on Github (https://github.com/dontobi/iobroker.docker.docker)."
   exit 1
 elif [ "$multihost" = "slave" ] && [ "$statesdbtype" != "" ] && [ "$statesdbhost" != "" ] && [ "$statesdbport" != "" ]
 then
@@ -369,7 +369,7 @@ elif [ "$multihost" != "" ]
 then
   echo "Multihost is set but it seems like some configuration is missing."
   echo "Please checke if you have configured the ENVs \"MULTIHOST\", \"IOB_STATESDB_TYPE\", \"IOB_STATESDB_HOST\" and \"IOB_STATESTDB_PORT\" correctly and start over."
-  echo "For more information see readme.md on Github (https://github.com/buanet/ioBroker.docker)."
+  echo "For more information see readme.md on Github (https://github.com/dontobi/iobroker.docker.docker)."
   exit 1
 fi
 
@@ -481,8 +481,11 @@ fi
 # Removing first run marker when exists
 if [ -f /opt/.firstrun ]
 then
-rm -f /opt/.firstrun
+  rm -f /opt/.firstrun
 fi
+
+# Cleaning NPM Cache (ioBroker directory)
+sudo -H -u iobroker npm cache clean --force
 
 #####
 # Starting ioBroker

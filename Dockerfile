@@ -11,22 +11,17 @@ LABEL org.opencontainers.image.title="ioBroker Docker Image" \
 
 ENV DEBIAN_FRONTEND noninteractive
 
-# Install prerequisites
+# Installation process
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
 
         # ioBroker prerequisites
-        acl apt-utils build-essential ca-certificates curl git gnupg2 gosu jq libcap2-bin \
-        libpam0g-dev libudev-dev locales lsb-release make net-tools pkg-config procps \
-        python3 python3-dev sudo unzip tar tzdata udev wget \
+        acl apt-utils build-essential ca-certificates cifs-utils curl git gnupg2 gosu jq libcap2-bin \
+        libcurl4-openssl-dev libgdcm3.0 libpam0g-dev libudev-dev locales lsb-release make \
+        net-tools nfs-common pkg-config procps python3 python3-dev sudo unzip tar tzdata \
+        udev wget \
 
         # Canvas prerequisites
         libcairo2-dev libjpeg-dev libgif-dev libpango1.0-dev libpixman-1-dev  librsvg2-dev \
-
-        # Avahi-Daemon prerequisites
-        avahi-daemon avahi-utils libavahi-compat-libdnssd-dev libnss-mdns \
-
-        # Adapter prerequisites (BackitUp, Zigbee and Vodafone-Speedtest)
-        cifs-utils libcurl4-openssl-dev libgdcm3.0 nfs-common \
 
     # Install node.js
     && curl -sL https://deb.nodesource.com/setup_${NODEJS}.x | bash \

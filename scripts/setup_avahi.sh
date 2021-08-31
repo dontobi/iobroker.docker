@@ -8,7 +8,7 @@ then
 else
   echo "Avahi-daemon is NOT installed. Going to install it now..."
   apt-get update > /opt/scripts/avahi_startup.log 2>&1
-  apt-get install -y libavahi-compat-libdnssd-dev avahi-daemon >> /opt/scripts/avahi_startup.log 2>&1
+  sudo apt-get install -qq -y --no-install-recommends avahi-daemon avahi-utils libavahi-compat-libdnssd-dev libnss-mdns >> /opt/scripts/avahi_startup.log 2>&1
   rm -rf /var/lib/apt/lists/* >> /opt/scripts/avahi_startup.log 2>&1
   echo "Configuring avahi-daemon..."
   sed -i '/^rlimit-nproc/s/^\(.*\)/#\1/g' /etc/avahi/avahi-daemon.conf
