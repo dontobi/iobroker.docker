@@ -28,7 +28,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     && apt-get update && apt-get install -y nodejs \
 
     # Install node-gyp - Node.js native addon build tool
-    # && npm install -g node-gyp \
+    && npm install -g node-gyp \
 
     # Generate locales en_US.UTF-8 and de_DE.UTF-8
     && sed -i 's/^# *\(de_DE.UTF-8\)/\1/' /etc/locale.gen \
