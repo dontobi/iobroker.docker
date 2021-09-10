@@ -4,8 +4,11 @@ FROM debian:bullseye-slim
 # Set container label
 LABEL org.opencontainers.image.title="ioBroker Docker Image" \
       org.opencontainers.image.description="Docker image for ioBroker smarthome software" \
-      org.opencontainers.image.authors="github@myhome.zone" \
+      org.opencontainers.image.documentation="https://github.com/dontobi/ioBroker.docker#readme" \
+      org.opencontainers.image.authors="Tobias S. <github@myhome.zone>" \
       org.opencontainers.image.url="https://github.com/dontobi/ioBroker.docker" \
+      org.opencontainers.image.source="https://github.com/dontobi/ioBroker.docker" \
+      org.opencontainers.image.base.name="docker.io/library/debian:bullseye-slim" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.created="${DATI}"
 
@@ -49,6 +52,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     && usermod --home /opt/iobroker iobroker \
     && usermod -u 1000 iobroker \
     && groupmod -g 1000 iobroker \
+    && chown root:iobroker /usr/sbin/gosu \
+    && chmod +s /usr/sbin/gosu \
 
     # Clean up installation cache
     && apt-get autoclean -y \
@@ -73,6 +78,9 @@ RUN chmod 777 /opt/scripts/ \
 # Backup initial ioBroker and userscript folder
 RUN tar -cf /opt/initial_iobroker.tar /opt/iobroker \
     && tar -cf /opt/initial_userscripts.tar /opt/userscripts
+
+# Change work dir
+WORKDIR /opt/iobroker/
 
 # Setting up ENVs
 ENV DEBIAN_FRONTEND="teletype" \
