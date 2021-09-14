@@ -19,9 +19,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
 
         # ioBroker prerequisites
         acl apt-utils build-essential ca-certificates cifs-utils curl git gnupg2 gosu jq libcap2-bin \
-        libcurl4-openssl-dev libgdcm3.0 libpam0g-dev libudev-dev locales lsb-release make \
-        net-tools nfs-common pkg-config procps python3 python3-dev sudo unzip tar tzdata \
-        udev wget \
+        libgdcm3.0 libpam0g-dev libudev-dev locales lsb-release make net-tools nfs-common pkg-config \
+        procps python3 python3-dev sudo unzip tar tzdata udev wget \
 
         # Canvas prerequisites
         libcairo2-dev libjpeg-dev libgif-dev libpango1.0-dev libpixman-1-dev  librsvg2-dev \
