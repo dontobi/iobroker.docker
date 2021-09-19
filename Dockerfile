@@ -41,9 +41,10 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     && npm config set unsafe-perm true \
     && curl -sL https://iobroker.net/install.sh | sed -e 's/cap_net_admin,//' | bash - \
     && mkdir -p /opt/scripts/.docker_config/ \
-    && echo $(hostname) > /opt/scripts/.docker_config/.install_host \
     && echo "starting" > /opt/scripts/.docker_config/.healthcheck \
+    && echo "${VERSION}" > /opt/scripts/.docker_config/.thisisdocker \
     && echo $(hostname) > /opt/.firstrun \
+    && iobroker unsetup -y \
     && npm config set unsafe-perm false \
 
     # Setting up iobroker-user
